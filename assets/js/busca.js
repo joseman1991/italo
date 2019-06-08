@@ -36,6 +36,7 @@ $(document).ready(function () {
 
     var iu = $('#iu');
 
+
     caja.change(function () {
         var val = caja.val();
         var ejemplo = lista.find('option[value="' + val + '"]').data('ejemplo');
@@ -56,14 +57,14 @@ $(document).ready(function () {
         var tbody = $('#example').find('tbody');
         var fila = $((document).createElement('tr'));
         if (codigo !== null || codigo !== undefined) {
-            
+
             var number = $((document).createElement('input'));
-            number.attr('type', 'text');            
+            number.attr('type', 'text');
             number.attr('name', 'cod[]');
             number.attr('value', codigo);
             number.attr('readonly', "true");
             number.addClass('form-control');
-            
+
             var campo = $((document).createElement('td'));
 //            var nombreCampo = $((document).createTextNode(codigo));
             campo.append(number);
@@ -103,7 +104,7 @@ $(document).ready(function () {
             fila.append(campo);
             tbody.append(fila);
             caja2.val('');
-           
+
         }
     });
 

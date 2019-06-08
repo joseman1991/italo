@@ -34,45 +34,31 @@ ob_start();
             <!-- Sidebar Holder -->
             <?php
             include './VerticalNav.php';
-            if (isset($_POST['btn-save'])) {
-                $canton = $_POST['idcanton'];
-                $fn = $_POST['fn'];
-                $hora = $_POST['appt-time'];
-                $nombreuser = $session_uid;
-
-                if ($crud->insertarCita($fn, $hora, $canton, $nombreuser)) {
-                    header("Location: citas.php?inserted");
-                } else {
-                    echo '<h1>' . $crud->error - '</h1>';
-                    //header("Location: citas.php?failure");
-                }
-            }
+           
             ?>
             <!-- Page Content Holder -->
             <div id="content">
                 <?php
                 include './HorizontalNav.php';
                 ?>
-                <h2>Estado de citas</h2>
+                <h2>Historial Clínico</h2>
                 <div class="form-group">
                     <table class='table table-bordered table-responsive table-striped table-hover'>
                         <?php
                         if (!empty($userDetails)) {
-                            if ($userDetails->idperfil == 3) {
+                            if ($userDetails->idperfil == 1) {
                                 ?>
                                 <tr>
                                     <th>Código</th>
+                                    <th>Diagnostico</th>
                                     <th>Fecha</th>
-                                    <th>Nombres</th>
-                                    <th>Hora</th>
-                                    <th>Canton</th>
-                                    <th>Estado</th>
+                                    <th>Observación</th>                                  
                                 </tr>
                                 <?php
-                                $query = "SELECT * FROM citas where codusuario='$session_uid'";
-                                $records_per_page = 3;
+                                $query = "SELECT idhistorial,diagnostico,fecha,observacion FROM historial where codusuario='$session_uid'";
+                                $records_per_page = 10;
                                 $newquery = $crud->paging($query, $records_per_page);
-                                $crud->getGridCitas($newquery);
+                                $crud->getHistorial($newquery);
                                 ?>
                                 <tr>
                                     <td colspan="8" align="center">
@@ -81,43 +67,60 @@ ob_start();
                                         </div>
                                     </td>
                                 </tr>
-                                <?php } else {
+                            <?php } else {
                                 ?>
+                                <tr>
+                                    <td colspan="4">
+                                        <form method="post">
+                                            <div class="form-group">
+
+                                                <label for="paciente">Paciente</label>
+                                                <datalist id="pacientes">                              
+                                                </datalist>
+                                                <input type="text" class="form-control" id="paciente" placeholder="Paciente" list="pacientes"  autocomplete="off" required="">
+                                                <input type="hidden" class="form-control" id="iu" name="codusuario" >                            
+                                                <br><button type="submit" class="btn btn-info" id="iu" name="btn-save" >Buscar</button>                            
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <th>Código</th>
-                                    <th>Nombres</th>
+                                    <th>Diagnostico</th>
                                     <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Canton</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th>Observación</th>  
                                 </tr>
                                 <?php
-                                $query = "SELECT * FROM citas where codusuario='$session_uid' and idestado=2";
-                                $records_per_page = 3;
-                                $newquery = $crud->paging($query, $records_per_page);
-                                $crud->getGridCitas3($newquery);
-                                ?>
-                                <tr>
-                                    <td colspan="8" align="center">
-                                        <div class="pagination-wrap">
-                                            <?php $crud->paginglink($query, $records_per_page); ?>
-                                        </div>
-                                    </td>                                     
-                                </tr>
-                                <?php
+                                if (isset($_POST['btn-save'])) {
+                                    $codusuario = $_POST['codusuario'];
+                                    $query = "SELECT idhistorial,diagnostico,fecha,observacion FROM historial where codusuario='$codusuario'";
+                                    $records_per_page = 10;
+                                    $newquery = $crud->paging($query, $records_per_page);
+                                    $crud->getHistorial($newquery);
+                                    ?>
+                                    <tr>
+                                        <td colspan="8" align="center">
+                                            <div class="pagination-wrap">
+                                                <?php $crud->paginglink($query, $records_per_page); ?>
+                                            </div>
+                                        </td>                                     
+                                    </tr>
+                                    <?php
                                 }
-                                }
-                                ?>
-                            </table>
-                        </div>
-                    </div>
+                            }
+                        }
+                        ?>
+                    </table>
                 </div>
-                <?php
-                include './BodyImports.php';
-                ?>
+            </div>
+        </div>
+        <?php
+        include './BodyImports.php';
+        ?>
         <script src="assets/js/scriptregistro.js">
         </script>
+        <script src="assets/js/busca.js"></script>
     </body>
 </html>
 <?php

@@ -53,26 +53,24 @@ ob_start();
                 <?php
                 include './HorizontalNav.php';
                 ?>
-                <h2>Estado de citas</h2>
+                <h2>Lista de Medicamentos</h2>
                 <div class="form-group">
                     <table class='table table-bordered table-responsive table-striped table-hover'>
                         <?php
                         if (!empty($userDetails)) {
-                            if ($userDetails->idperfil == 1) {
+                            if ($userDetails->idperfil == 3) {
                                 ?>
                                 <tr>
-                                    <th>Código</th>
-                                    <th>Nombres</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Canton</th>
-                                    <th>Estado</th>
+                                    <th>Codigo</th>                                    
+                                    <th>Medicina</th>
+                                    <th>Categoria</th>
+                                   
                                 </tr>
                                 <?php
-                                $query = "SELECT * FROM citas where codusuario='$session_uid'";                               
-                                $records_per_page = 3;
+                                $query = "SELECT idmedicina,descripcion,idcategoria FROM medicinas";
+                                $records_per_page = 10;
                                 $newquery = $crud->paging($query, $records_per_page);
-                                $crud->getGridCitas($newquery);
+                                $crud->verReceta($newquery);
                                 ?>
                                 <tr>
                                     <td colspan="8" align="center">
@@ -81,44 +79,21 @@ ob_start();
                                         </div>
                                     </td>
                                 </tr>
-                                <?php } else {
-                                ?>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Nombres</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Canton</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                                <?php
-                                $query = "SELECT * FROM citas where idestado<>3";
-                                $records_per_page = 3;
-                                $newquery = $crud->paging($query, $records_per_page);
-                                $crud->getGridCitas2($newquery,$userDetails->idperfil);
-                                ?>
-                                <tr>
-                                    <td colspan="8" align="center">
-                                        <div class="pagination-wrap">
-                                            <?php $crud->paginglink($query, $records_per_page); ?>
-                                        </div>
-                                    </td>
-                                     
-                                </tr>
-                                <?php
-                                }
-                                }
-                                ?>
+                            <?php
+                            }
+                        } else {
+                            header("location: login.php");
+                        }
+                        ?>
 
-                            </table>
-                        </div>
 
-                    </div>
+                    </table>
                 </div>
-                <?php
-                include './BodyImports.php';
-                ?>
+            </div>
+        </div>
+        <?php
+        include './BodyImports.php';
+        ?>
         <script src="assets/js/scriptregistro.js">
         </script>
     </body>

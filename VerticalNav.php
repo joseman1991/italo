@@ -35,43 +35,69 @@ if ($session_uid > 0) {
     </div>
     <ul class="list-unstyled components">  
         <li class="active">
-            <a href="index.php"><span><i class="fas fa-home"  > </i></span> Inicio  </a>
+            <a href="index.php"><span><i class="fas fa-home"  > </i></span> Inicio     </a>
         </li>
-        <li class>
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <span><i class="fas fa-address-book"  > </i></span> Citas</a>
-            <ul class="collapse list-unstyled" id="homeSubmenu">
-                <li>
-                    <a href="citas.php">Reservar una cita</a>
-                </li>
-                <li>
-                    <a href="estado-citas.php">Ver estado de citas</a>
-                </li>                
-            </ul>          
-        </li>
-        <li>             
-            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Consultas</a>
-            <ul class="collapse list-unstyled" id="pageSubmenu">
-                <li>
-                    <a href="diagnostico.php">Diagnostico</a>
-                </li>
-                <li>
-                    <a href="receta.php">Crear Receta</a>
-                </li>
-                <li>
-                    <a href="verReceta.php">Ver Receta</a>
-                </li>
+        <?php
+        if (!empty($userDetails)) {
+            ?>   
+            <li class>
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <span><i class="fas fa-address-book"  > </i></span> Citas</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <?php
+                    if ($perfil->idperfil == 1 || $perfil->idperfil == 3) {
+                        ?>   
+                        <li>                       
+                            <a href="citas.php">Reservar una cita</a>
+                        </li>
+                        <?php
+                    }
+                    ?>  
+                    <li>
+                        <a href="estado-citas.php">Ver estado de citas</a>
+                    </li> 
 
-            </ul>
-        </li>
+                </ul>          
+            </li>
+            <li>             
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <span><i class="fas fa-ambulance"></i></span> Consultas</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li>
+                        <a href="diagnostico.php">Historia Clínica</a>
+                    </li>
+                    <li>
+                        <a href="receta.php">Crear Receta</a>
+                    </li>
+                    <li>
+                        <a href="verReceta.php">Ver Receta</a>
+                    </li>
 
+                </ul>
+            </li>
+            
+            <?php
+            
+             if($perfil->idperfil ==2){
+                 
+             
+            ?>
+            <li>             
+                <a href="#medSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <span><i class="fas fa-prescription-bottle-alt"></i></span> Medicinas</a>
+                <ul class="collapse list-unstyled" id="medSubmenu">
+                    
+                    <li>
+                        <a href="medicamentos.php">Registrar medicina</a>
+                    </li>
+                    <li>
+                        <a href="listaMedicamentos.php">Ver medicinas</a>
+                    </li>
+
+                </ul>
+            </li>
+             <?php }}
+        ?>  
     </ul>
-    <ul class="list-unstyled CTAs">
-        <li>
-            <a></a>
-        </li>
-        <li>
-            <a ></a>
-        </li>
-    </ul>
+
 </nav>

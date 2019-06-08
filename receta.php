@@ -103,7 +103,7 @@ ob_start();
                                 </datalist>
                                 <input type="text" class="form-control" id="medicina" placeholder="Medicina" list="medicinas" name="Medicina"> 
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="bton" value="agregar">Agregar</button>
+                                    <button class="btn btn-info" type="button" id="bton" value="agregar">Agregar</button>
                                 </span>
                             </div>
                         </div>

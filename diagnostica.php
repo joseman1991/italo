@@ -37,19 +37,15 @@ ob_start();
             <?php
             include './VerticalNav.php';
               if (isset($_POST['btn-save'])) {
-            $dni = $_POST['ci'];
-            $clave = $_POST['clave'];
-            $lnombre1 = $_POST['n1'];
-            $nombre2 = $_POST['n2'];
-            $apellido1 = $_POST['a1'];
+            $diagnostico = $_POST['diag'];
+            $observacion = $_POST['obser'];
+            $idcita = $_POST['idcita'];
+            $fecha = $_POST['fecha'];
+            $idestado = $_POST['idestado'];
             $apellido2 = $_POST['a2'];
-            $dir = $_POST['dir'];
-            $tel = $_POST['tel'];
-            $correo = $_POST['correo'];
-            $canton = $_POST['idcanton'];
-            $fn = $_POST['fn'];
-            if ($crud->insertarPaciente($dni, $correo, $clave, $lnombre1, $nombre2, $apellido1, $apellido2, $dir, $tel, $canton, $fn)) {
-                header("Location: registro.php?inserted");
+            $codusuario = $_POST['codu'];            
+            if ($crud->diagnosticar($diagnostico, $fecha, $idcita, $observacion, $codusuario, $idestado)) {
+                header("Location: estado-citas.php?inserted");
             } else {
                 echo '<h1>'.$crud->error-'</h1>';
                 //header("Location: registro.php?failure");
@@ -77,8 +73,9 @@ ob_start();
                             <input type="text" class="form-control" id="inputAddress" placeholder="Obervacion" name="obser">
                         </div>
                         <input type="hidden" name="idcita" value="<?php echo $_GET['idcita']; ?>">
-                        <input type="hidden" name="idestado" value="<?php echo $_GET['idestado']; ?>">
+                        <input type="hidden" name="idestado" value="3">
                         <input type="hidden" name="fecha" value="<?php echo $_GET['fecha']; ?>">
+                        <input type="hidden" name="codu" value="<?php echo $_GET['codu']; ?>">
                                            
                         <button type="submit" class="btn btn-primary" name="btn-save">Registrarse</button>
                     </form>

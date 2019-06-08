@@ -40,7 +40,7 @@ class crud {
 
     public function buscarPaciente() {
         try {
-            $stmt = $this->db->prepare("SELECT codusuario, CONCAT_WS(' ',nombre1 , nombre2, apellido1 , apellido2) AS nombre FROM usuarios"
+            $stmt = $this->db->prepare("SELECT codusuario, CONCAT_WS(' ',nombre1 , nombre2, apellido1 , apellido2) AS nombre FROM usuarios where idperfil=1"
             );
             $stmt->execute();
             $data = $stmt->fetchAll(); //User data
@@ -158,6 +158,23 @@ class crud {
             $stmt->bindparam(":hora", $hora);
             $stmt->bindparam(":idcanton", $idcanton);
             $stmt->bindparam(":codusuario", $codusuario);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            $error = $e->getMessage();
+            $this->error = $error;
+            echo $e->getMessage();
+            return false;
+        }
+    }
+    
+    public function insertarMedicamento($idcategoria, $descripcion) {
+        $error = '';
+        try {
+            $stmt = $this->db->prepare("INSERT INTO medicinas (idmedicina,descripcion,idcategoria)"
+                    . "VALUES(default,:descripcion,:idcategoria)");
+            $stmt->bindparam(":descripcion", $descripcion);
+            $stmt->bindparam(":idcategoria", $idcategoria);            
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
@@ -369,7 +386,7 @@ class crud {
         } else {
             ?>
             <tr>
-                <td>Nothing here...</td>
+                <td>Sin resultados...</td>
             </tr>
             <?php
         }
@@ -415,12 +432,39 @@ class crud {
         } else {
             ?>
             <tr>
-                <td>Nothing here...</td>
+                <td>Sin resultados...</td>
             </tr>
             <?php
         }
     }
 
+    
+    public function getHistorial($query) {
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+                <tr>
+                    <td><?php print($row['idhistorial']); ?></td>
+                    <td><?php print($row['diagnostico']); ?></td>
+                    <td><?php print($row['fecha']); ?></td>
+                    <td><?php print($row['observacion']); ?></td>
+                    
+                </tr>
+                <?php
+            }
+        } else {
+            ?>
+            <tr>
+                <td>Sin resultados...</td>
+            </tr>
+            <?php
+        }
+    }
+    
+    
+    
     public function verReceta($query) {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -430,18 +474,17 @@ class crud {
                  
                 <tr>
                     <td><?php print($row['idmedicina']); ?></td>
-                     <td><?php print($row['cantidad']); ?></td>
+                     <td><?php print($row['descripcion']); ?></td>
                     <td><?php
-                $vpais = $row['idmedicina'];
-                $quer_pais = $this->db->prepare("select * from medicinas where idmedicina =:varpais");
+                $vpais = $row['idcategoria'];
+                $quer_pais = $this->db->prepare("select descripcion from categorias where idcategoria=:varpais");
                 $quer_pais->execute([':varpais' => $vpais]);
                 $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
                 print($fila['descripcion']);
                 ?>
                     </td>
                    
-                    <td><?php print($row['dosis']); ?></td>
-                    <td><?php print($row['observacion']); ?></td>                     
+                                   
                      
                 </tr>
                 <?php
@@ -449,13 +492,13 @@ class crud {
         } else {
             ?>
             <tr>
-                <td>Nothing here...</td>
+                <td>Sin resultados...</td>
             </tr>
             <?php
         }
     }
 
-    public function getGridCitas2($query) {
+    public function getGridCitas2($query,$idperfil) {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
@@ -465,14 +508,17 @@ class crud {
                 <tr>
                     <td><?php print($id); ?></td>
                     <td><?php
-                $vpais = $row['codusuario'];
+                $idu = $row['codusuario'];
                 $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
+                $quer_pais->execute([':varpais' => $idu]);
                 $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                $fulln = $fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2'];
                 print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
                 ?>
                     </td>
-                    <td><?php print($row['fecha']); ?></td>
+                    <td><?php 
+                    $fecha = $row['fecha'];
+                    print($row['fecha']); ?></td>
                     <td><?php print($row['hora']); ?></td>
                     <td><?php
                 $vpais = $row['idcanton'];
@@ -490,15 +536,29 @@ class crud {
                 print($fila['descripcion']);
                 ?>
                     </td>
-                    <td> <a href="setStadoCita.php?idcita=<?php print($id) . "&idestado=2" ?>" class="btn btn-primary" type="button"  >Aceptar</a>  
-                        <a  href="setStadoCita.php?idcita=<?php print($id) . "&idestado=4" ?>" class="btn btn-danger" type="button"  >Rechazar</a></td>  
+                    <td> 
+                        <?php
+                        if($idperfil==3){
+                        ?>
+                        <a href="setStadoCita.php?idcita=<?php print($id) . "&idestado=2" ?>" class="btn btn-primary" type="button"  >Aceptar</a>  
+                        <a  href="setStadoCita.php?idcita=<?php print($id) . "&idestado=4" ?>" class="btn btn-danger" type="button"  >Rechazar</a>
+                   <?php
+            }else if($idperfil==2 && $vpais==2){
+             ?>    
+             <a href="diagnostica.php?idcita=<?php print($id) . "&idestado=3&fecha=$fecha&nombre=$fulln&codu=$idu" ?>" class="btn btn-primary" type="button"  >Realizar Consulta</a>  
+   
+                    
+                    
+                    </td>  
                 </tr>
-                <?php
+               
+            <?php    
+            }
             }
         } else {
             ?>
             <tr>
-                <td>Nothing here...</td>
+                <td>Sin resultados...</td>
             </tr>
             <?php
         }
@@ -551,7 +611,7 @@ class crud {
         } else {
             ?>
             <tr>
-                <td>Nothing here...</td>
+                <td>Sin resultados...</td>
             </tr>
             <?php
         }
@@ -580,20 +640,20 @@ class crud {
                 }
                 if ($current_page != 1) {
                     $previous = $current_page - 1;
-                    echo "<li><a href='" . $self . "?page_no=1'>First</a></li>";
-                    echo "<li><a href='" . $self . "?page_no=" . $previous . "'>Previous</a></li>";
+                    echo "<li><a href='" . $self . "?page_no=1'>Primero || </a></li>";
+                    echo "<li><a href='" . $self . "?page_no=" . $previous . "'> Anterior ||</a></li>";
                 }
                 for ($i = 1; $i <= $total_no_of_pages; $i++) {
                     if ($i == $current_page) {
-                        echo "<li><a href='" . $self . "?page_no=" . $i . "' style='color:red;'>" . $i . "</a></li>";
+                        echo "<li><a href='" . $self . "?page_no=" . $i . "' style='color:red;'> " . $i . " || </a> </li>";
                     } else {
-                        echo "<li><a href='" . $self . "?page_no=" . $i . "'>" . $i . "</a></li>";
+                        echo "<li><a href='" . $self . "?page_no=" . $i . "'> " . $i . " ||</a></li>";
                     }
                 }
                 if ($current_page != $total_no_of_pages) {
                     $next = $current_page + 1;
-                    echo "<li><a href='" . $self . "?page_no=" . $next . "'>Next</a></li>";
-                    echo "<li><a href='" . $self . "?page_no=" . $total_no_of_pages . "'>Last</a></li>";
+                    echo "<li><a href='" . $self . "?page_no=" . $next . "'> Siguiente || </a></li>";
+                    echo "<li><a href='" . $self . "?page_no=" . $total_no_of_pages . "'> Último ||</a></li>";
                 }
                 ?></ul><?php
         }
