@@ -302,13 +302,13 @@ insert into cantones values('1115','11','QUILANGA');
 insert into cantones values('1116','11','OLMEDO');
 
 insert into cantones values('1201','12','BABAHOYO');
-INSERT into usuarios values(default,'1201','1','1','Paciente Gregory','P.','House','Software',
+INSERT into usuarios values(default,'1201','paciente','1','Paciente','P.','House','Software',
 'sdsdsd','sdssss','1201','1991-01-01',1);
 
-INSERT into usuarios values(default,'1203','2','2','Dr. Gregory','P.','House','Software',
+INSERT into usuarios values(default,'1203','doctor','2','Doctor','P.','House','Software',
 'sdsdsd','sdssss','1201','1991-01-01',2);
 
-INSERT into usuarios values(default,'1204','3','3','Secretario Gregory','P.','House','Software',
+INSERT into usuarios values(default,'1204','secretaria','3','Secretaria','P.','House','Software',
 'sdsdsd','sdssss','1201','1991-01-01',3);
 
 
