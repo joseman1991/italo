@@ -77,7 +77,7 @@ ob_start();
                 <?php
                 include './HorizontalNav.php';
                 ?>
-                <h2>Registro de Historial</h2>
+                <h2>Crea Recetas</h2>
                 <div class="form-group">
                     <form  method="post">                         
                         <div class="form-group">

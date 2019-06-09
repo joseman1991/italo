@@ -34,43 +34,35 @@ ob_start();
             <!-- Sidebar Holder -->
             <?php
             include './VerticalNav.php';
-            if (isset($_POST['btn-save'])) {
-                $canton = $_POST['idcanton'];
-                $fn = $_POST['fn'];
-                $hora = $_POST['appt-time'];
-                $nombreuser = $session_uid;
-
-                if ($crud->insertarCita($fn, $hora, $canton, $nombreuser)) {
-                    header("Location: citas.php?inserted");
-                } else {
-                    echo '<h1>' . $crud->error - '</h1>';
-                    //header("Location: citas.php?failure");
-                }
-            }
             ?>
             <!-- Page Content Holder -->
             <div id="content">
                 <?php
                 include './HorizontalNav.php';
                 ?>
-                <h2>Lista de Medicamentos</h2>
+                <h2>Ver recetas</h2>
                 <div class="form-group">
                     <table class='table table-bordered table-responsive table-striped table-hover'>
                         <?php
                         if (!empty($userDetails)) {
-                            if ($userDetails->idperfil == 3 ||$userDetails->idperfil == 2) {
+                            
                                 ?>
                                 <tr>
-                                    <th>Codigo</th>                                    
-                                    <th>Medicina</th>
-                                    <th>Categoria</th>
-                                   
+                                    <th>Codigo</th>
+                                    <th>Medicina</th> 
+                                    <th>Cantidad</th>                                    
+                                    <th>Dosis</th>
+                                    <th>Obervacion</th>
                                 </tr>
                                 <?php
-                                $query = "SELECT idmedicina,descripcion,idcategoria FROM medicinas";
-                                $records_per_page = 10;
+                                $idreceta = $_GET['idreceta'];
+                                $query = "SELECT dr.idmedicina,m.descripcion,cantidad,dosis,observacion FROM detallereceta dr "
+                                        . "inner join receta r on r.idreceta=dr.idreceta "
+                                        . "inner join medicinas m on m.idmedicina = dr.idmedicina "
+                                        . " where dr.idreceta=$idreceta"; /* where codusuario='$session_uid'"; */
+                                $records_per_page = 1;
                                 $newquery = $crud->paging($query, $records_per_page);
-                                $crud->verReceta2($newquery);
+                                $crud->verDetalleReceta($newquery);
                                 ?>
                                 <tr>
                                     <td colspan="8" align="center">
@@ -79,8 +71,8 @@ ob_start();
                                         </div>
                                     </td>
                                 </tr>
-                            <?php
-                            }
+                                <?php
+                           
                         } else {
                             header("location: login.php");
                         }

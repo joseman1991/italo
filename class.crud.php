@@ -167,14 +167,14 @@ class crud {
             return false;
         }
     }
-    
+
     public function insertarMedicamento($idcategoria, $descripcion) {
         $error = '';
         try {
             $stmt = $this->db->prepare("INSERT INTO medicinas (idmedicina,descripcion,idcategoria)"
                     . "VALUES(default,:descripcion,:idcategoria)");
             $stmt->bindparam(":descripcion", $descripcion);
-            $stmt->bindparam(":idcategoria", $idcategoria);            
+            $stmt->bindparam(":idcategoria", $idcategoria);
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
@@ -401,30 +401,30 @@ class crud {
                 <tr>
                     <td><?php print($row['idcita']); ?></td>
                     <td><?php
-                $vpais = $row['codusuario'];
-                $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
-                ?>
+                        $vpais = $row['codusuario'];
+                        $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
+                        $quer_pais->execute([':varpais' => $vpais]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
+                        ?>
                     </td>
                     <td><?php print($row['fecha']); ?></td>
                     <td><?php print($row['hora']); ?></td>
                     <td><?php
-                $vpais = $row['idcanton'];
-                $quer_pais = $this->db->prepare("select * from cantones where idcanton =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                print($fila['nombrecanton']);
-                ?>
+                        $vpais = $row['idcanton'];
+                        $quer_pais = $this->db->prepare("select * from cantones where idcanton =:varpais");
+                        $quer_pais->execute([':varpais' => $vpais]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        print($fila['nombrecanton']);
+                        ?>
                     </td>
                     <td><?php
-                $vpais = $row['idestado'];
-                $quer_pais = $this->db->prepare("select * from estados where idestado =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                print($fila['descripcion']);
-                ?>
+                        $vpais = $row['idestado'];
+                        $quer_pais = $this->db->prepare("select * from estados where idestado =:varpais");
+                        $quer_pais->execute([':varpais' => $vpais]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        print($fila['descripcion']);
+                        ?>
                     </td>
                 </tr>
                 <?php
@@ -438,7 +438,6 @@ class crud {
         }
     }
 
-    
     public function getHistorial($query) {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -450,7 +449,7 @@ class crud {
                     <td><?php print($row['diagnostico']); ?></td>
                     <td><?php print($row['fecha']); ?></td>
                     <td><?php print($row['observacion']); ?></td>
-                    
+
                 </tr>
                 <?php
             }
@@ -462,10 +461,39 @@ class crud {
             <?php
         }
     }
-    
-    
-    
-    public function verReceta($query) {
+
+    public function verDetalleReceta($query) {
+         
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+
+                <tr>
+                    <td><?php print($row['idmedicina']); ?></td>
+                    <td><?php print($row['descripcion']); ?></td>
+                    <td><?php print($row['cantidad']); ?>
+                    <td><?php print($row['dosis']); ?></td>
+                    <td><?php print($row['observacion']); ?>
+
+                    </td>
+
+
+
+                </tr>
+                <?php
+            }
+        } else {
+            ?>
+            <tr>
+                <td>Sin resultados...</td>
+            </tr>
+            <?php
+        }
+    }
+
+     public function verReceta2($query) {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
@@ -497,8 +525,39 @@ class crud {
             <?php
         }
     }
+    
+    
+    public function verReceta($query) {
+       
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                ?>
 
-    public function getGridCitas2($query,$idperfil) {
+                <tr>
+                    <td><?php print($row['idreceta']); ?></td>
+                    <td><?php print($row['descripcion']); ?></td>
+                    <td><?php
+                        print($row['fecha']);
+                        ?>
+                    </td>
+
+                    <td><a href="verDetalleReceta.php?idreceta=<?php print($row['idreceta']); ?>" class="btn btn-primary">Ver Detalles</a></td>              
+
+                </tr>
+                <?php
+            }
+        } else {
+            ?>
+            <tr>
+                <td>Sin resultados...</td>
+            </tr>
+            <?php
+        }
+    }
+
+    public function getGridCitas2($query, $idperfil) {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
@@ -508,52 +567,53 @@ class crud {
                 <tr>
                     <td><?php print($id); ?></td>
                     <td><?php
-                $idu = $row['codusuario'];
-                $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
-                $quer_pais->execute([':varpais' => $idu]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                $fulln = $fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2'];
-                print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
-                ?>
+                        $idu = $row['codusuario'];
+                        $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
+                        $quer_pais->execute([':varpais' => $idu]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        $fulln = $fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2'];
+                        print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
+                        ?>
                     </td>
-                    <td><?php 
-                    $fecha = $row['fecha'];
-                    print($row['fecha']); ?></td>
+                    <td><?php
+                        $fecha = $row['fecha'];
+                        print($row['fecha']);
+                        ?></td>
                     <td><?php print($row['hora']); ?></td>
                     <td><?php
-                $vpais = $row['idcanton'];
-                $quer_pais = $this->db->prepare("select * from cantones where idcanton =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                print($fila['nombrecanton']);
-                ?>
+                        $vpais = $row['idcanton'];
+                        $quer_pais = $this->db->prepare("select * from cantones where idcanton =:varpais");
+                        $quer_pais->execute([':varpais' => $vpais]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        print($fila['nombrecanton']);
+                        ?>
                     </td>
                     <td><?php
-                $vpais = $row['idestado'];
-                $quer_pais = $this->db->prepare("select * from estados where idestado =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                print($fila['descripcion']);
-                ?>
+                        $vpais = $row['idestado'];
+                        $quer_pais = $this->db->prepare("select * from estados where idestado =:varpais");
+                        $quer_pais->execute([':varpais' => $vpais]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        print($fila['descripcion']);
+                        ?>
                     </td>
                     <td> 
                         <?php
-                        if($idperfil==3){
-                        ?>
-                        <a href="setStadoCita.php?idcita=<?php print($id) . "&idestado=2" ?>" class="btn btn-primary" type="button"  >Aceptar</a>  
-                        <a  href="setStadoCita.php?idcita=<?php print($id) . "&idestado=4" ?>" class="btn btn-danger" type="button"  >Rechazar</a>
-                   <?php
-            }else if($idperfil==2 && $vpais==2){
-             ?>    
-             <a href="diagnostica.php?idcita=<?php print($id) . "&idestado=3&fecha=$fecha&nombre=$fulln&codu=$idu" ?>" class="btn btn-primary" type="button"  >Realizar Consulta</a>  
-   
-                    
-                    
-                    </td>  
-                </tr>
-               
-            <?php    
-            }
+                        if ($idperfil == 3) {
+                            ?>
+                            <a href="setStadoCita.php?idcita=<?php print($id) . "&idestado=2" ?>" class="btn btn-primary" type="button"  >Aceptar</a>  
+                            <a  href="setStadoCita.php?idcita=<?php print($id) . "&idestado=4" ?>" class="btn btn-danger" type="button"  >Rechazar</a>
+                            <?php
+                        } else if ($idperfil == 2 && $vpais == 2) {
+                            ?>    
+                            <a href="diagnostica.php?idcita=<?php print($id) . "&idestado=3&fecha=$fecha&nombre=$fulln&codu=$idu" ?>" class="btn btn-primary" type="button"  >Realizar Consulta</a>  
+
+
+
+                        </td>  
+                    </tr>
+
+                    <?php
+                }
             }
         } else {
             ?>
@@ -574,18 +634,18 @@ class crud {
                 <tr>
                     <td><?php print($id); ?></td>
                     <td><?php
-                $vpais = $row['codusuario'];
-                $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
-                $quer_pais->execute([':varpais' => $vpais]);
-                $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
-                $fulln = $fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2'];
-                print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
-                ?>
+                        $vpais = $row['codusuario'];
+                        $quer_pais = $this->db->prepare("select * from usuarios where codusuario =:varpais");
+                        $quer_pais->execute([':varpais' => $vpais]);
+                        $fila = $quer_pais->fetch(PDO::FETCH_ASSOC);
+                        $fulln = $fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2'];
+                        print($fila['nombre1'] . " " . $fila['nombre2'] . " " . $fila['apellido1'] . " " . $fila['apellido2']);
+                        ?>
                     </td>
                     <td><?php
-                $fecha = $row['fecha'];
-                print($row['fecha']);
-                ?></td>
+                        $fecha = $row['fecha'];
+                        print($row['fecha']);
+                        ?></td>
                     <td><?php print($row['hora']); ?></td>
                     <td><?php
                         $vpais = $row['idcanton'];

@@ -38,7 +38,7 @@ session_start();
             <!-- Sidebar Holder -->
             <?php
             include './VerticalNav.php';
-            if (isset($_POST['btn-save'])) {
+            if (isset($_GET['btn-save'])) {
                 $canton = $_POST['idcanton'];
                 $fn = $_POST['fn'];
                 $hora = $_POST['appt-time'];
@@ -61,7 +61,7 @@ session_start();
                         ?>
                         <h2>Registro de Citas</h2>
                         <div class="form-group">
-                            <form  method="post">
+                            <form  method="post" id="frm" action="citas.php?btn-save">
                                 <?php
                                 if ($userDetails->idperfil == 3) {
                                     ?>
@@ -90,7 +90,7 @@ session_start();
                                     ?>
                                     <div class="form-group col-md-4">
                                         <label for="inputPassword4">Fecha de Cita</label>
-                                        <input   class="form-control" id="datepicker" placeholder="Fecha de Cita" name="fn">
+                                        <input   class="form-control" id="datepicker" placeholder="Fecha de Cita" name="fn" required="" readonly="" >
                                     </div>
 
                                     <div class="form-group col-md-4">
@@ -157,7 +157,7 @@ session_start();
                                         </select >
                                     </div>                             
                                 </div>                        
-                                <button type="submit" class="btn btn-primary" name="btn-save">Registrarse</button>
+                                <button type="button" class="btn btn-primary" name="btn-save" id="btnsm">Registrarse</button>
                             </form>
                         </div>
                     </div>

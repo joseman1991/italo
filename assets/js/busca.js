@@ -5,6 +5,19 @@
  */
 
 $(document).ready(function () {
+    var btnsm = $('#btnsm');
+    var frm = $('#frm');
+    var datepicker = $('#datepicker');
+
+
+    btnsm.click(function () {
+        if(datepicker.val()===''){
+            alert("Por favor escoja la fecha");
+        }else{
+            frm.submit();
+        }
+    });
+
     var bton = $('#bton');
     var lista = $('#pacientes');
     var caja = $('#paciente');

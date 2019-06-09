@@ -66,9 +66,16 @@ if ($session_uid > 0) {
                     <li>
                         <a href="diagnostico.php">Historia Clínica</a>
                     </li>
+                    <?php 
+                    if($perfil->idperfil ==2){
+                    ?>
                     <li>
                         <a href="receta.php">Crear Receta</a>
                     </li>
+                    
+                    <?php
+                    }
+                    ?>
                     <li>
                         <a href="verReceta.php">Ver Receta</a>
                     </li>
@@ -78,7 +85,7 @@ if ($session_uid > 0) {
             
             <?php
             
-             if($perfil->idperfil ==2){
+             if($perfil->idperfil ==2 || $perfil->idperfil ==3){
                  
              
             ?>
@@ -87,13 +94,19 @@ if ($session_uid > 0) {
                     <span><i class="fas fa-prescription-bottle-alt"></i></span> Medicinas</a>
                 <ul class="collapse list-unstyled" id="medSubmenu">
                     
+                    <?php
+                    if($perfil->idperfil !=2 ){
+                    ?>
                     <li>
-                        <a href="medicamentos.php">Registrar medicina</a>
+                        <a href="medicamentos.php">Registrar medicinas</a>
                     </li>
+                   <?php
+                    }
+                   ?>
                     <li>
                         <a href="listaMedicamentos.php">Ver medicinas</a>
                     </li>
-
+                   
                 </ul>
             </li>
              <?php }}
